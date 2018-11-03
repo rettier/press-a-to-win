@@ -136,7 +136,8 @@ def menu(data, rated_results, key, cipher, last_guess=b""):
         print_state = False
 
     print()
-    mprint(replace_binary(b"Current key: " + Colors.bOKBLUE + (key or b" ") + Colors.bENDC))
+    mprint(replace_binary(b"Current key: " + Colors.bOKBLUE + (key or b" ") + Colors.bENDC) +
+           b" | hex: 0x" + Colors.bOKBLUE + ''.join("{:02X}".format(k) for k in key).encode("ascii") + Colors.bENDC)
     mprint("Best guesses: {}".format(best_guesses))
     mprint("[" + Colors.OKBLUE + "s" + Colors.ENDC + "]ow chars, " +
            "[" + Colors.OKBLUE + "t" + Colors.ENDC + "]est guess, " +
@@ -267,6 +268,8 @@ class XORCipher(SymmetricCipher):
 
 
 def hex_to_bytes(str):
+    if isinstance(str, bytes):
+        str = str.decode("ascii")
     return bytes.fromhex(str)
 
 
@@ -343,7 +346,7 @@ class PressA:
 
     def read_hex(self, file):
         with open(file, "rb") as f:
-            self.cipher_text = [hex_to_bytes(self._remove_newlines(file.read()))]
+            self.cipher_text = [hex_to_bytes(self._remove_newlines(f.read()))]
         return self
 
     def read_binary(self, file):
