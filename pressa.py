@@ -2,6 +2,7 @@ import base64
 import math
 import re
 import sys
+import traceback
 
 
 class Colors:
@@ -118,6 +119,7 @@ def monotest(data, key, cipher, pprint=True):
 
 
 def print_exc(e):
+    traceback.print_exc()
     mprint(" ".join([Colors.FAIL, "error", str(e), Colors.ENDC]))
 
 
@@ -196,7 +198,10 @@ def menu(data, rated_results, key, cipher, last_guess=b""):
             return key + cipher.calculate_key(data[int(idx)], len(key), crib.encode("ascii"))
 
         elif choice[0] == "e":
-            print("Key:", key.decode("ascii"))
+            print()
+            mprint(replace_binary(b"Current key: " + Colors.bOKBLUE + (key or b" ") + Colors.bENDC) +
+                   b" | hex: 0x" + Colors.bOKBLUE + ''.join("{:02X}".format(k) for k in key).encode("ascii") +
+                   Colors.bENDC)
             exit(0)
     except Exception as e:
         print_exc(e)
